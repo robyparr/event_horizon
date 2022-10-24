@@ -10,7 +10,13 @@ defmodule EventHorizon.MixProject do
       compilers: [] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [
+        export: "coverage_export",
+        ignore_modules: [
+          EventHorizonWeb
+        ]
+      ]
     ]
   end
 
