@@ -18,6 +18,22 @@ defmodule EventHorizonWeb.SiteLiveTest do
   describe "Index" do
     setup [:create_site]
 
+    test "redirects if user is not logged in", %{site: site} do
+      conn = build_conn()
+
+      Enum.each(
+        [
+          Routes.site_index_path(conn, :index),
+          Routes.site_index_path(conn, :new),
+          Routes.site_index_path(conn, :edit, site)
+        ],
+        fn route ->
+          {:error, {:redirect, redirect_attrs}} = live(conn, route)
+          assert redirect_attrs.to == "/user/log_in"
+        end
+      )
+    end
+
     test "lists all sites", %{conn: conn, site: site} do
       {:ok, _index_live, html} = live(conn, Routes.site_index_path(conn, :index))
 
@@ -79,6 +95,21 @@ defmodule EventHorizonWeb.SiteLiveTest do
 
   describe "Show" do
     setup [:create_site]
+
+    test "redirects if user is not logged in", %{site: site} do
+      conn = build_conn()
+
+      Enum.each(
+        [
+          Routes.site_show_path(conn, :show, site),
+          Routes.site_show_path(conn, :edit, site)
+        ],
+        fn route ->
+          {:error, {:redirect, redirect_attrs}} = live(conn, route)
+          assert redirect_attrs.to == "/user/log_in"
+        end
+      )
+    end
 
     test "displays site", %{conn: conn, site: site} do
       {:ok, _show_live, html} = live(conn, Routes.site_show_path(conn, :show, site))

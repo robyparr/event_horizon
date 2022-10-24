@@ -61,4 +61,11 @@ defmodule EventHorizonWeb.ConnCase do
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:user_token, token)
   end
+
+  def create_and_auth_site(%{conn: conn}) do
+    site = EventHorizon.SitesFixtures.site_fixture()
+    conn = Plug.Conn.put_req_header(conn, "authorization", "Bearer #{site.token}")
+
+    %{conn: conn, site: site}
+  end
 end

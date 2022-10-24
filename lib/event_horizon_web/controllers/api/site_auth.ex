@@ -16,13 +16,20 @@ defmodule EventHorizonWeb.Api.SiteAuth do
   end
 
   defp load_site(conn) do
-    token =
-      get_req_header(conn, "authorization")
-      |> List.first()
-      |> String.split(" ")
-      |> List.last()
-
+    token = resolve_auth_token(conn)
     site = token && Sites.get_site_by_token(token)
     assign(conn, :current_site, site)
+  end
+
+  defp resolve_auth_token(conn) do
+    case get_req_header(conn, "authorization") do
+      [header_value] ->
+        header_value
+        |> String.split(" ")
+        |> List.last()
+
+      _ ->
+        nil
+    end
   end
 end
