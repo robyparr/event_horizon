@@ -7,6 +7,7 @@ defmodule EventHorizon.Sites do
   alias EventHorizon.Repo
 
   alias EventHorizon.Sites.Site
+  alias EventHorizon.Sites.Event
 
   @doc """
   Returns the list of sites.
@@ -36,6 +37,8 @@ defmodule EventHorizon.Sites do
 
   """
   def get_site!(id), do: Repo.get!(Site, id)
+
+  def get_site_by_token(token), do: Repo.get_by(Site, token: token)
 
   @doc """
   Creates a site.
@@ -100,5 +103,16 @@ defmodule EventHorizon.Sites do
   """
   def change_site(%Site{} = site, attrs \\ %{}) do
     Site.changeset(site, attrs)
+  end
+
+  def list_site_events(%Site{} = site) do
+    Ecto.assoc(site, :events)
+    |> Repo.all()
+  end
+
+  def create_event(%Site{} = site, attrs \\ %{}) do
+    Ecto.build_assoc(site, :events)
+    |> Event.changeset(attrs)
+    |> Repo.insert()
   end
 end

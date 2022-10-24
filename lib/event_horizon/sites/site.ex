@@ -2,11 +2,15 @@ defmodule EventHorizon.Sites.Site do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias EventHorizon.Sites
+
   @rand_size 32
 
   schema "sites" do
     field :name, :string
     field :token, :string
+
+    has_many :events, Sites.Event
 
     timestamps()
   end

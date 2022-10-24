@@ -2,6 +2,7 @@ defmodule EventHorizonWeb.Router do
   use EventHorizonWeb, :router
 
   import EventHorizonWeb.UserAuth
+  import EventHorizonWeb.Api.SiteAuth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -15,6 +16,7 @@ defmodule EventHorizonWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :ensure_site_authenticated
   end
 
   scope "/", EventHorizonWeb do
@@ -24,9 +26,11 @@ defmodule EventHorizonWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", EventHorizonWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", EventHorizonWeb do
+    pipe_through :api
+
+    post "/events", Api.EventController, :create
+  end
 
   # Enables LiveDashboard only for development
   #
