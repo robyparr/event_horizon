@@ -2,6 +2,7 @@ defmodule EventHorizonWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
+  alias Phoenix.LiveView
   alias EventHorizon.Accounts
   alias EventHorizonWeb.Router.Helpers, as: Routes
 
@@ -105,6 +106,56 @@ defmodule EventHorizonWeb.UserAuth do
       else
         {nil, conn}
       end
+    end
+  end
+
+  @doc """
+  #mount_current_user:
+  Assigns current_user to socket assigns based on user_token.
+  Returns nil if there's no user_token or if there's no matching user.
+
+  #ensure_authenticated:
+  Authenticates the user by looking into the session.
+  Assigns current_user to socket assigns based on user_token.
+  Redirects to login page if there's no logged user.
+
+  ##Examples
+  # In a LiveView file
+  defmodule EventHorizonWeb.PageLive do
+    use EventHorizonWeb, :live_view
+
+    on_mount {EventHorizonWeb.UserAuth, :mount_current_user}
+
+  #using live_session in router.ex
+  live_session :authenticated, on_mount: [{EventHorizonWeb.UserAuth, :ensure_authenticated}] do
+    live "/profile", ProfileLive, :index
+  end
+  """
+  def on_mount(:mount_current_user, _params, session, socket) do
+    {:cont, mount_current_user(session, socket)}
+  end
+
+  def on_mount(:ensure_authenticated, _params, session, socket) do
+    socket = mount_current_user(session, socket)
+
+    case socket.assigns.current_user do
+      nil ->
+        {:halt, LiveView.redirect(socket, to: Routes.user_session_path(socket, :new))}
+
+      _ ->
+        {:cont, socket}
+    end
+  end
+
+  defp mount_current_user(session, socket) do
+    case session do
+      %{"user_token" => user_token} ->
+        LiveView.assign_new(socket, :current_user, fn ->
+          Accounts.get_user_by_session_token(user_token)
+        end)
+
+      %{} ->
+        LiveView.assign_new(socket, :current_user, fn -> nil end)
     end
   end
 

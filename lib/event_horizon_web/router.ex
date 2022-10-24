@@ -73,6 +73,15 @@ defmodule EventHorizonWeb.Router do
   scope "/", EventHorizonWeb do
     pipe_through [:browser, :require_authenticated_user]
 
+    live_session :default, on_mount: {EventHorizonWeb.UserAuth, :ensure_authenticated} do
+      live "/sites", SiteLive.Index, :index
+      live "/sites/new", SiteLive.Index, :new
+      live "/sites/:id/edit", SiteLive.Index, :edit
+
+      live "/sites/:id", SiteLive.Show, :show
+      live "/sites/:id/show/edit", SiteLive.Show, :edit
+    end
+
     get "/user/settings", UserSettingsController, :edit
     put "/user/settings", UserSettingsController, :update
     get "/user/settings/confirm_email/:token", UserSettingsController, :confirm_email
