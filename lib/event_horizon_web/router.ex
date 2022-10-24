@@ -62,8 +62,6 @@ defmodule EventHorizonWeb.Router do
   scope "/", EventHorizonWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
-    get "/user/register", UserRegistrationController, :new
-    post "/user/register", UserRegistrationController, :create
     get "/user/log_in", UserSessionController, :new
     post "/user/log_in", UserSessionController, :create
     get "/user/reset_password", UserResetPasswordController, :new
