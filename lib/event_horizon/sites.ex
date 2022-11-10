@@ -110,6 +110,11 @@ defmodule EventHorizon.Sites do
     |> Repo.all()
   end
 
+  def count_site_events(%Site{} = site) do
+    Ecto.assoc(site, :events)
+    |> Repo.aggregate(:count)
+  end
+
   def create_event(%Site{} = site, attrs \\ %{}) do
     Ecto.build_assoc(site, :events)
     |> Event.changeset(attrs)

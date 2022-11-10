@@ -25,6 +25,11 @@
     <%= @site.token %>
   </li>
 
+  <li>
+    <strong>Event Count:</strong>
+    <%= @event_count %>
+  </li>
+
 </ul>
 
 <span><%= live_patch "Edit", to: Routes.site_show_path(@socket, :edit, @site), class: "button" %></span> |

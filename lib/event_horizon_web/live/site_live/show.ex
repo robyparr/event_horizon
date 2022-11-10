@@ -10,10 +10,15 @@ defmodule EventHorizonWeb.SiteLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    {:noreply,
-     socket
-     |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:site, Sites.get_site!(id))}
+    site = Sites.get_site!(id)
+
+    socket =
+      socket
+      |> assign(:page_title, page_title(socket.assigns.live_action))
+      |> assign(:site, site)
+      |> assign(:event_count, Sites.count_site_events(site))
+
+    {:noreply, socket}
   end
 
   defp page_title(:show), do: "Show Site"
