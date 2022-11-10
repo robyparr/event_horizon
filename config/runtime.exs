@@ -82,3 +82,18 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end
+
+allowed_cors_origins =
+  System.get_env("CORS_ORIGINS", "")
+  |> String.split(",")
+  |> Enum.map(&String.trim/1)
+
+allowed_cors_methods =
+  System.get_env("CORS_METHODS", "")
+  |> String.split(",")
+  |> Enum.map(&String.trim/1)
+
+config :cors_plug,
+  origin: allowed_cors_origins,
+  max_age: 86400,
+  methods: allowed_cors_methods

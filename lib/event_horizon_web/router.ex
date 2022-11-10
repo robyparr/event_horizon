@@ -16,6 +16,7 @@ defmodule EventHorizonWeb.Router do
   end
 
   pipeline :api do
+    plug CORSPlug
     plug :accepts, ["json"]
     plug :ensure_site_authenticated
   end
@@ -25,6 +26,7 @@ defmodule EventHorizonWeb.Router do
     pipe_through :api
 
     post "/events", Api.EventController, :create
+    options "/events", Api.EventController, :options
   end
 
   ## Guest-only routes
