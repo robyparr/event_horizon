@@ -30,6 +30,10 @@
     <%= @event_count %>
   </li>
 
+  <li>
+    <strong>Events Today:</strong>
+    <%= @todays_event_count %>
+  </li>
 </ul>
 
 <span><%= live_patch "Edit", to: Routes.site_show_path(@socket, :edit, @site), class: "button" %></span> |

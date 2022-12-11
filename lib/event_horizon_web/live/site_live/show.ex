@@ -19,6 +19,7 @@ defmodule EventHorizonWeb.SiteLive.Show do
       |> assign(:page_title, page_title(socket.assigns.live_action))
       |> assign(:site, site)
       |> assign(:event_count, Sites.count_site_events(site))
+      |> assign(:todays_event_count, event_chart_data[Date.utc_today()])
       |> push_chart_data("event-chart", {"Events", event_chart_data})
 
     {:noreply, socket}
