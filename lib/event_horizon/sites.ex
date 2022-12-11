@@ -120,4 +120,34 @@ defmodule EventHorizon.Sites do
     |> Event.changeset(attrs)
     |> Repo.insert()
   end
+
+  def recent_event_count_by_date(site, opts \\ []) do
+    recent_days = Keyword.get(opts, :days, 5)
+    end_on = Date.utc_today()
+    start_on = Date.add(end_on, -recent_days)
+
+    query =
+      from e in Event,
+        where:
+          e.site_id == ^site.id and
+            fragment("?::DATE BETWEEN ? AND ?", e.inserted_at, ^start_on, ^end_on),
+        group_by: fragment("DATE_TRUNC('day', ?)", e.inserted_at),
+        order_by: {:asc, fragment("DATE_TRUNC('day', ?)", e.inserted_at)},
+        select: {fragment("DATE_TRUNC('day', ?)::DATE", e.inserted_at), count(e.id)}
+
+    Repo.all(query)
+    |> Map.new()
+    |> fill_missing_event_counts(start_on, end_on)
+  end
+
+  defp fill_missing_event_counts(data, start_on, end_on) do
+    map_func = fn date ->
+      event_count = Map.get(data, date, 0)
+      {date, event_count}
+    end
+
+    Date.range(start_on, end_on)
+    |> Enum.map(map_func)
+    |> Map.new()
+  end
 end

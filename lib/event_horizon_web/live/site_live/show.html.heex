@@ -34,3 +34,5 @@
 
 <span><%= live_patch "Edit", to: Routes.site_show_path(@socket, :edit, @site), class: "button" %></span> |
 <span><%= live_redirect "Back", to: Routes.site_index_path(@socket, :index) %></span>
+
+<canvas id="event-chart" width="400" height="200" phx-hook="Chart"></canvas>
