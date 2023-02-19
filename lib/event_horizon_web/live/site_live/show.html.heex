@@ -1,4 +1,11 @@
-<h1>Show Site</h1>
+<h1 class="mb-0">
+  <%= live_redirect "🔙", to: Routes.site_index_path(@socket, :index) %>
+  <%= @site.name %>
+</h1>
+<div class="mb-20">
+  <%= live_patch "Edit", to: Routes.site_show_path(@socket, :edit, @site), class: "button" %>
+  <%= link "Delete", to: "#", phx_click: "delete", data: [confirm: "Are you sure?"] %>
+</div>
 
 <%= if @live_action in [:edit] do %>
   <.modal return_to={Routes.site_show_path(@socket, :show, @site)}>
@@ -16,11 +23,6 @@
 <ul>
 
   <li>
-    <strong>Name:</strong>
-    <%= @site.name %>
-  </li>
-
-  <li>
     <strong>Token:</strong>
     <%= @site.token %>
   </li>
@@ -35,8 +37,5 @@
     <%= @todays_event_count %>
   </li>
 </ul>
-
-<span><%= live_patch "Edit", to: Routes.site_show_path(@socket, :edit, @site), class: "button" %></span> |
-<span><%= live_redirect "Back", to: Routes.site_index_path(@socket, :index) %></span>
 
 <canvas id="event-chart" width="400" height="200" phx-hook="Chart"></canvas>

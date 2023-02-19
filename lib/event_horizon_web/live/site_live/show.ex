@@ -25,6 +25,17 @@ defmodule EventHorizonWeb.SiteLive.Show do
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_event("delete", _params, socket) do
+    site = socket.assigns.site
+    {:ok, _} = Sites.delete_site(site)
+
+    {:noreply,
+     socket
+     |> put_flash(:info, "#{site.name} deleted successfully.")
+     |> push_redirect(to: Routes.site_index_path(socket, :index))}
+  end
+
   defp page_title(:show), do: "Show Site"
   defp page_title(:edit), do: "Edit Site"
 

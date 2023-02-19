@@ -6,18 +6,15 @@ defmodule EventHorizonWeb.SiteLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :sites, list_sites())}
+    {:ok,
+     socket
+     |> assign(:sites, list_sites())
+     |> load_events_today_for_sites()}
   end
 
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-  end
-
-  defp apply_action(socket, :edit, %{"id" => id}) do
-    socket
-    |> assign(:page_title, "Edit Site")
-    |> assign(:site, Sites.get_site!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -32,15 +29,17 @@ defmodule EventHorizonWeb.SiteLive.Index do
     |> assign(:site, nil)
   end
 
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    site = Sites.get_site!(id)
-    {:ok, _} = Sites.delete_site(site)
-
-    {:noreply, assign(socket, :sites, list_sites())}
-  end
-
   defp list_sites do
     Sites.list_sites()
+  end
+
+  defp load_events_today_for_sites(socket) do
+    events =
+      Enum.reduce(socket.assigns.sites, %{}, fn site, acc ->
+        event_chart_data = Sites.recent_event_count_by_date(site, days: 1)
+        Map.put(acc, site.id, event_chart_data[Date.utc_today()])
+      end)
+
+    assign(socket, :events_today, events)
   end
 end

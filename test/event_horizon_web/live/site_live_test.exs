@@ -62,35 +62,6 @@ defmodule EventHorizonWeb.SiteLiveTest do
       assert html =~ "Site created successfully"
       assert html =~ "some name"
     end
-
-    test "updates site in listing", %{conn: conn, site: site} do
-      {:ok, index_live, _html} = live(conn, Routes.site_index_path(conn, :index))
-
-      assert index_live |> element("#site-#{site.id} a", "Edit") |> render_click() =~
-               "Edit Site"
-
-      assert_patch(index_live, Routes.site_index_path(conn, :edit, site))
-
-      assert index_live
-             |> form("#site-form", site: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      {:ok, _, html} =
-        index_live
-        |> form("#site-form", site: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, Routes.site_index_path(conn, :index))
-
-      assert html =~ "Site updated successfully"
-      assert html =~ "some updated name"
-    end
-
-    test "deletes site in listing", %{conn: conn, site: site} do
-      {:ok, index_live, _html} = live(conn, Routes.site_index_path(conn, :index))
-
-      assert index_live |> element("#site-#{site.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#site-#{site.id}")
-    end
   end
 
   describe "Show" do
@@ -138,6 +109,19 @@ defmodule EventHorizonWeb.SiteLiveTest do
 
       assert html =~ "Site updated successfully"
       assert html =~ "some updated name"
+    end
+
+    test "deletes site", %{conn: conn, site: site} do
+      {:ok, show_live, _html} = live(conn, Routes.site_show_path(conn, :show, site))
+
+      {:ok, index_live, html} =
+        show_live
+        |> element("a", "Delete")
+        |> render_click()
+        |> follow_redirect(conn, Routes.site_index_path(conn, :index))
+
+      assert html =~ "#{site.name} deleted successfully."
+      refute has_element?(index_live, "#site-#{site.id}")
     end
   end
 end

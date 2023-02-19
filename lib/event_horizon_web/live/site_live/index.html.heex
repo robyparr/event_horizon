@@ -1,5 +1,7 @@
 <h1>Listing Sites</h1>
 
+<span><%= live_patch "New Site", to: Routes.site_index_path(@socket, :new) %></span>
+
 <%= if @live_action in [:new, :edit] do %>
   <.modal return_to={Routes.site_index_path(@socket, :index)}>
     <.live_component
@@ -17,25 +19,15 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Token</th>
-
-      <th></th>
+      <th>Events Today</th>
     </tr>
   </thead>
   <tbody id="sites">
     <%= for site <- @sites do %>
       <tr id={"site-#{site.id}"}>
-        <td><%= site.name %></td>
-        <td><%= site.token %></td>
-
-        <td>
-          <span><%= live_redirect "Show", to: Routes.site_show_path(@socket, :show, site) %></span>
-          <span><%= live_patch "Edit", to: Routes.site_index_path(@socket, :edit, site) %></span>
-          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: site.id, data: [confirm: "Are you sure?"] %></span>
-        </td>
+        <td><%= live_redirect site.name, to: Routes.site_show_path(@socket, :show, site) %></td>
+        <td><%= @events_today[site.id] || "Loading..." %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<span><%= live_patch "New Site", to: Routes.site_index_path(@socket, :new) %></span>
