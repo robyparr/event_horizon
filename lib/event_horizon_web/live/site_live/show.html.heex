@@ -24,7 +24,15 @@
 
   <li>
     <strong>Token:</strong>
-    <%= @site.token %>
+    <code id="site-token"><%= @site.token %></code>
+    <button
+      type="button"
+      id="copy-site-token"
+      data-target="#site-token"
+      phx-hook="CopyToClipboard"
+    >
+      📋
+    </button>
   </li>
 
   <li>

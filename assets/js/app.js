@@ -26,12 +26,14 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 import Chart from "./hooks/Chart"
+import CopyToClipboard from "./hooks/CopyToClipboard"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   hooks: {
     Chart,
+    CopyToClipboard,
   }
 })
 
