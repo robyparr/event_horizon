@@ -1,6 +1,6 @@
 <h1>Listing Sites</h1>
 
-<span><%= live_patch "New Site", to: Routes.site_index_path(@socket, :new) %></span>
+<span><.link patch={Routes.site_index_path(@socket, :new)}>New Site</.link></span>
 
 <%= if @live_action in [:new, :edit] do %>
   <.modal return_to={Routes.site_index_path(@socket, :index)}>
@@ -25,7 +25,7 @@
   <tbody id="sites">
     <%= for site <- @sites do %>
       <tr id={"site-#{site.id}"}>
-        <td><%= live_redirect site.name, to: Routes.site_show_path(@socket, :show, site) %></td>
+        <td><.link patch={Routes.site_show_path(@socket, :show, site)}><%= site.name %></.link></td>
         <td><%= @events_today[site.id] || "Loading..." %></td>
       </tr>
     <% end %>

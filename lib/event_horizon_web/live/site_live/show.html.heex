@@ -1,9 +1,9 @@
 <h1 class="mb-0">
-  <%= live_redirect "🔙", to: Routes.site_index_path(@socket, :index) %>
+  <.link patch={Routes.site_index_path(@socket, :index)}>🔙</.link>
   <%= @site.name %>
 </h1>
 <div class="mb-20">
-  <%= live_patch "Edit", to: Routes.site_show_path(@socket, :edit, @site), class: "button" %>
+  <.link patch={Routes.site_show_path(@socket, :edit, @site)} class="button">Edit</.link>
   <%= link "Delete", to: "#", phx_click: "delete", data: [confirm: "Are you sure?"] %>
 </div>
 
