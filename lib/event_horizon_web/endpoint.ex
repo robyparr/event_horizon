@@ -7,7 +7,8 @@ defmodule EventHorizonWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_event_horizon_key",
-    signing_salt: "1Xm7z0tw"
+    signing_salt: "1Xm7z0tw",
+    same_site: "Lax"
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]

@@ -7,18 +7,16 @@
   <.link phx-click="delete" data-confirm="Are you sure?">Delete</.link>
 </div>
 
-<%= if @live_action in [:edit] do %>
-  <.modal return_to={~p"/sites/#{@site}"}>
-    <.live_component
-      module={EventHorizonWeb.SiteLive.FormComponent}
-      id={@site.id}
-      title={@page_title}
-      action={@live_action}
-      site={@site}
-      return_to={~p"/sites/#{@site}"}
-    />
-  </.modal>
-<% end %>
+<.modal :if={@live_action in [:edit]} id="site-modal" show on_cancel={JS.patch(~p"/sites/#{@site}")}>
+  <.live_component
+    module={EventHorizonWeb.SiteLive.FormComponent}
+    id={@site.id}
+    title={@page_title}
+    action={@live_action}
+    site={@site}
+    return_to={~p"/sites/#{@site}"}
+  />
+</.modal>
 
 <ul>
 
