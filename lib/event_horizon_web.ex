@@ -49,7 +49,7 @@ defmodule EventHorizonWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {EventHorizonWeb.LayoutView, "live.html"}
+        layout: {EventHorizonWeb.LayoutView, :live}
 
       unquote(view_helpers())
     end

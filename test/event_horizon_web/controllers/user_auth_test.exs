@@ -90,8 +90,7 @@ defmodule EventHorizonWeb.UserAuthTest do
     end
 
     test "authenticates user from cookies", %{conn: conn, user: user} do
-      logged_in_conn =
-        conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
+      logged_in_conn = conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
 
       user_token = logged_in_conn.cookies[@remember_me_cookie]
       %{value: signed_token} = logged_in_conn.resp_cookies[@remember_me_cookie]
@@ -132,7 +131,7 @@ defmodule EventHorizonWeb.UserAuthTest do
       conn = conn |> fetch_flash() |> UserAuth.require_authenticated_user([])
       assert conn.halted
       assert redirected_to(conn) == Routes.user_session_path(conn, :new)
-      assert get_flash(conn, :error) == "You must log in to access this page."
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "You must log in to access this page."
     end
 
     test "stores the path to redirect to on GET", %{conn: conn} do

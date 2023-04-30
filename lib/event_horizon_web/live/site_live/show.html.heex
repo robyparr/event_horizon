@@ -3,8 +3,8 @@
   <%= @site.name %>
 </h1>
 <div class="mb-20">
-  <.link patch={~p"/sites/#{@site}/show/edit"} class="button">Edit Site</.link>
-  <%= link "Delete", to: "#", phx_click: "delete", data: [confirm: "Are you sure?"] %>
+  <.link patch={~p"/sites/#{@site}/show/edit"} class="button">Edit</.link>
+  <.link phx-click="delete" data-confirm="Are you sure?">Delete</.link>
 </div>
 
 <%= if @live_action in [:edit] do %>
