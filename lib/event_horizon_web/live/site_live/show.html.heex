@@ -1,21 +1,21 @@
 <h1 class="mb-0">
-  <.link navigate={Routes.site_index_path(@socket, :index)}>🔙</.link>
+  <.link navigate={~p"/sites"}>🔙</.link>
   <%= @site.name %>
 </h1>
 <div class="mb-20">
-  <.link patch={Routes.site_show_path(@socket, :edit, @site)} class="button">Edit</.link>
+  <.link patch={~p"/sites/#{@site}/show/edit"} class="button">Edit Site</.link>
   <%= link "Delete", to: "#", phx_click: "delete", data: [confirm: "Are you sure?"] %>
 </div>
 
 <%= if @live_action in [:edit] do %>
-  <.modal return_to={Routes.site_show_path(@socket, :show, @site)}>
+  <.modal return_to={~p"/sites/#{@site}"}>
     <.live_component
       module={EventHorizonWeb.SiteLive.FormComponent}
       id={@site.id}
       title={@page_title}
       action={@live_action}
       site={@site}
-      return_to={Routes.site_show_path(@socket, :show, @site)}
+      return_to={~p"/sites/#{@site}"}
     />
   </.modal>
 <% end %>

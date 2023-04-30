@@ -19,6 +19,8 @@ defmodule EventHorizonWeb.ConnCase do
 
   using do
     quote do
+      use EventHorizonWeb, :verified_routes
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest

@@ -1,16 +1,16 @@
 <h1>Listing Sites</h1>
 
-<span><.link patch={Routes.site_index_path(@socket, :new)}>New Site</.link></span>
+<span><.link patch={~p"/sites/new"}>New Site</.link></span>
 
 <%= if @live_action in [:new, :edit] do %>
-  <.modal return_to={Routes.site_index_path(@socket, :index)}>
+  <.modal return_to={~p"/sites"}>
     <.live_component
       module={EventHorizonWeb.SiteLive.FormComponent}
       id={@site.id || :new}
       title={@page_title}
       action={@live_action}
       site={@site}
-      return_to={Routes.site_index_path(@socket, :index)}
+      return_to={~p"/sites"}
     />
   </.modal>
 <% end %>
@@ -25,7 +25,7 @@
   <tbody id="sites">
     <%= for site <- @sites do %>
       <tr id={"site-#{site.id}"}>
-        <td><.link navigate={Routes.site_show_path(@socket, :show, site)}><%= site.name %></.link></td>
+        <td><.link navigate={~p"/sites/#{site}"}><%= site.name %></.link></td>
         <td><%= @events_today[site.id] || "Loading..." %></td>
       </tr>
     <% end %>

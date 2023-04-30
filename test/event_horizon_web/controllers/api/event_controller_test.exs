@@ -23,7 +23,7 @@ defmodule EventHorizonWeb.Api.EventControllerTest do
   describe "create event" do
     test "renders event when data is valid", %{conn: conn, site: site} do
       assert Sites.list_site_events(site) == []
-      conn = post(conn, Routes.event_path(conn, :create), event: @create_attrs)
+      conn = post(conn, ~p"/api/events", event: @create_attrs)
       assert response(conn, 201) == ""
 
       assert [%Event{} = event] = Sites.list_site_events(site)
@@ -33,14 +33,14 @@ defmodule EventHorizonWeb.Api.EventControllerTest do
     test "renders errors when data is invalid", %{conn: conn, site: site} do
       assert Sites.list_site_events(site) == []
 
-      conn = post(conn, Routes.event_path(conn, :create), event: @invalid_attrs)
+      conn = post(conn, ~p"/api/events", event: @invalid_attrs)
       assert json_response(conn, 422) == %{"errors" => %{"action" => ["can't be blank"]}}
       assert Sites.list_site_events(site) == []
     end
 
     test "renders unauthorized if site token is invalid" do
       conn = build_conn()
-      conn = post(conn, Routes.event_path(conn, :create), event: @create_attrs)
+      conn = post(conn, ~p"/api/events", event: @create_attrs)
       assert response(conn, 401) == ""
     end
   end

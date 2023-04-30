@@ -33,7 +33,7 @@ defmodule EventHorizonWeb.SiteLive.Show do
     {:noreply,
      socket
      |> put_flash(:info, "#{site.name} deleted successfully.")
-     |> push_redirect(to: Routes.site_index_path(socket, :index))}
+     |> push_redirect(to: ~p"/sites")}
   end
 
   defp page_title(:show), do: "Show Site"
