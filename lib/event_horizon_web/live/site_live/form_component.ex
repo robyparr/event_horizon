@@ -4,13 +4,33 @@ defmodule EventHorizonWeb.SiteLive.FormComponent do
   alias EventHorizon.Sites
 
   @impl true
+  def render(assigns) do
+    ~H"""
+    <div>
+      <.header>
+        <%= @title %>
+        <:subtitle>Use this form to manage site records in your database.</:subtitle>
+      </.header>
+
+      <.simple_form for={@form} id="site-form" phx-target={@myself} phx-change="validate" phx-submit="save">
+        <.input field={@form[:name]} type="text" label="Name" />
+
+        <:actions>
+          <.button phx-disable-with="Saving...">Save</.button>
+        </:actions>
+      </.simple_form>
+    </div>
+    """
+  end
+
+  @impl true
   def update(%{site: site} = assigns, socket) do
     changeset = Sites.change_site(site)
 
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:changeset, changeset)}
+     |> assign_form(changeset)}
   end
 
   @impl true
@@ -20,7 +40,7 @@ defmodule EventHorizonWeb.SiteLive.FormComponent do
       |> Sites.change_site(site_params)
       |> Map.put(:action, :validate)
 
-    {:noreply, assign(socket, :changeset, changeset)}
+    {:noreply, assign_form(socket, changeset)}
   end
 
   def handle_event("save", %{"site" => site_params}, socket) do
@@ -29,27 +49,37 @@ defmodule EventHorizonWeb.SiteLive.FormComponent do
 
   defp save_site(socket, :edit, site_params) do
     case Sites.update_site(socket.assigns.site, site_params) do
-      {:ok, _site} ->
+      {:ok, site} ->
+        notify_parent({:saved, site})
+
         {:noreply,
          socket
          |> put_flash(:info, "Site updated successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
+        {:noreply, assign_form(socket, changeset)}
     end
   end
 
   defp save_site(socket, :new, site_params) do
     case Sites.create_site(site_params) do
-      {:ok, _site} ->
+      {:ok, site} ->
+        notify_parent({:saved, site})
+
         {:noreply,
          socket
          |> put_flash(:info, "Site created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, assign_form(socket, changeset)}
     end
   end
+
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset))
+  end
+
+  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end

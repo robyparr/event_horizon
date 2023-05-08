@@ -6,10 +6,12 @@ defmodule EventHorizonWeb.SiteLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    sites = Sites.list_sites()
+
     {:ok,
      socket
-     |> assign(:sites, list_sites())
-     |> load_events_today_for_sites()}
+     |> stream(:sites, sites)
+     |> load_events_today_for_sites(sites)}
   end
 
   @impl true
@@ -29,13 +31,14 @@ defmodule EventHorizonWeb.SiteLive.Index do
     |> assign(:site, nil)
   end
 
-  defp list_sites do
-    Sites.list_sites()
+  @impl true
+  def handle_info({EventHorizonWeb.SiteLive.FormComponent, {:saved, site}}, socket) do
+    {:noreply, stream_insert(socket, :sites, site)}
   end
 
-  defp load_events_today_for_sites(socket) do
+  defp load_events_today_for_sites(socket, sites) do
     events =
-      Enum.reduce(socket.assigns.sites, %{}, fn site, acc ->
+      Enum.reduce(sites, %{}, fn site, acc ->
         event_chart_data = Sites.recent_event_count_by_date(site, days: 1)
         Map.put(acc, site.id, event_chart_data[Date.utc_today()])
       end)

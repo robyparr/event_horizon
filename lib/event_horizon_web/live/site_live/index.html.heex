@@ -1,6 +1,25 @@
-<h1>Listing Sites</h1>
+<.header>
+  Listing Sites
+  <:actions>
+    <.link patch={~p"/sites/new"}>
+      <.button>New Site</.button>
+    </.link>
+  </:actions>
+</.header>
 
-<span><.link patch={~p"/sites/new"}>New Site</.link></span>
+<.table
+  id="sites"
+  rows={@streams.sites}
+  row_click={fn {_id, site} -> JS.navigate(~p"/sites/#{site}") end}
+>
+  <:col :let={{_id, site}} label="Name"><%= site.name %></:col>
+  <:col :let={{_id, site}} label="Events Today"><%= @events_today[site.id] || "Loading..." %></:col>
+  <:action :let={{_id, site}}>
+    <div class="sr-only">
+      <.link navigate={~p"/sites/#{site}"}>Show</.link>
+    </div>
+  </:action>
+</.table>
 
 <.modal :if={@live_action in [:new]} id="site-modal" show on_cancel={JS.patch(~p"/sites")}>
   <.live_component
@@ -9,23 +28,6 @@
     title={@page_title}
     action={@live_action}
     site={@site}
-    return_to={~p"/sites"}
+    patch={~p"/sites"}
   />
 </.modal>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Events Today</th>
-    </tr>
-  </thead>
-  <tbody id="sites">
-    <%= for site <- @sites do %>
-      <tr id={"site-#{site.id}"}>
-        <td><.link navigate={~p"/sites/#{site}"}><%= site.name %></.link></td>
-        <td><%= @events_today[site.id] || "Loading..." %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>

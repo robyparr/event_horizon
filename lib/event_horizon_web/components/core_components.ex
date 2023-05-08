@@ -558,6 +558,15 @@ defmodule EventHorizonWeb.CoreComponents do
     """
   end
 
+  attr :id, :string, default: nil
+  slot :inner_block, required: true
+
+  def code(assigns) do
+    ~H"""
+    <code id={@id}><%= render_slot(@inner_block) %></code>
+    """
+  end
+
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do

@@ -53,12 +53,13 @@ defmodule EventHorizonWeb.SiteLiveTest do
              |> form("#site-form", site: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:ok, _, html} =
-        index_live
-        |> form("#site-form", site: @create_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/sites")
+      assert index_live
+             |> form("#site-form", site: @create_attrs)
+             |> render_submit()
 
+      assert_patch(index_live, ~p"/sites")
+
+      html = render(index_live)
       assert html =~ "Site created successfully"
       assert html =~ "some name"
     end
@@ -101,12 +102,13 @@ defmodule EventHorizonWeb.SiteLiveTest do
              |> form("#site-form", site: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:ok, _, html} =
-        show_live
-        |> form("#site-form", site: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/sites/#{site}")
+      assert show_live
+             |> form("#site-form", site: @update_attrs)
+             |> render_submit()
 
+      assert_patch(show_live, ~p"/sites/#{site}")
+
+      html = render(show_live)
       assert html =~ "Site updated successfully"
       assert html =~ "some updated name"
     end
