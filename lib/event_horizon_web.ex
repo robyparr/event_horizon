@@ -38,7 +38,9 @@ defmodule EventHorizonWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: EventHorizonWeb
+      use Phoenix.Controller,
+        namespace: EventHorizonWeb,
+        formats: [:html, :json]
 
       import Plug.Conn
       import EventHorizonWeb.Gettext
