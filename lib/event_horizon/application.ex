@@ -8,12 +8,14 @@ defmodule EventHorizon.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      EventHorizon.Repo,
       # Start the Telemetry supervisor
       EventHorizonWeb.Telemetry,
+      # Start the Ecto repository
+      EventHorizon.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: EventHorizon.PubSub},
+      # Start Finch
+      {Finch, name: EventHorizon.Finch},
       # Start the Endpoint (http/https)
       EventHorizonWeb.Endpoint
       # Start a worker by calling: EventHorizon.Worker.start_link(arg)

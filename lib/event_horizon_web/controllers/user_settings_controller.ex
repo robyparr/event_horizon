@@ -7,7 +7,7 @@ defmodule EventHorizonWeb.UserSettingsController do
   plug :assign_email_and_password_changesets
 
   def edit(conn, _params) do
-    render(conn, "edit.html")
+    render(conn, :edit)
   end
 
   def update(conn, %{"action" => "update_email"} = params) do
@@ -16,10 +16,10 @@ defmodule EventHorizonWeb.UserSettingsController do
 
     case Accounts.apply_user_email(user, password, user_params) do
       {:ok, applied_user} ->
-        Accounts.deliver_update_email_instructions(
+        Accounts.deliver_user_update_email_instructions(
           applied_user,
           user.email,
-          &Routes.user_settings_url(conn, :confirm_email, &1)
+          &url(~p"/user/settings/confirm_email/#{&1}")
         )
 
         conn
@@ -27,10 +27,10 @@ defmodule EventHorizonWeb.UserSettingsController do
           :info,
           "A link to confirm your email change has been sent to the new address."
         )
-        |> redirect(to: Routes.user_settings_path(conn, :edit))
+        |> redirect(to: ~p"/user/settings")
 
       {:error, changeset} ->
-        render(conn, "edit.html", email_changeset: changeset)
+        render(conn, :edit, email_changeset: changeset)
     end
   end
 
@@ -42,11 +42,11 @@ defmodule EventHorizonWeb.UserSettingsController do
       {:ok, user} ->
         conn
         |> put_flash(:info, "Password updated successfully.")
-        |> put_session(:user_return_to, Routes.user_settings_path(conn, :edit))
+        |> put_session(:user_return_to, ~p"/user/settings")
         |> UserAuth.log_in_user(user)
 
       {:error, changeset} ->
-        render(conn, "edit.html", password_changeset: changeset)
+        render(conn, :edit, password_changeset: changeset)
     end
   end
 
@@ -55,12 +55,12 @@ defmodule EventHorizonWeb.UserSettingsController do
       :ok ->
         conn
         |> put_flash(:info, "Email changed successfully.")
-        |> redirect(to: Routes.user_settings_path(conn, :edit))
+        |> redirect(to: ~p"/user/settings")
 
       :error ->
         conn
         |> put_flash(:error, "Email change link is invalid or it has expired.")
-        |> redirect(to: Routes.user_settings_path(conn, :edit))
+        |> redirect(to: ~p"/user/settings")
     end
   end
 

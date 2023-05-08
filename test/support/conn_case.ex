@@ -19,15 +19,17 @@ defmodule EventHorizonWeb.ConnCase do
 
   using do
     quote do
+      # The default endpoint for testing
+      @endpoint EventHorizonWeb.Endpoint
+
+      use EventHorizonWeb, :verified_routes
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import EventHorizonWeb.ConnCase
 
       alias EventHorizonWeb.Router.Helpers, as: Routes
-
-      # The default endpoint for testing
-      @endpoint EventHorizonWeb.Endpoint
     end
   end
 

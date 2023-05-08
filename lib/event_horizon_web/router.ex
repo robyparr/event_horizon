@@ -33,6 +33,8 @@ defmodule EventHorizonWeb.Router do
   scope "/", EventHorizonWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
+    # get "/user/register", UserRegistrationController, :new
+    # post "/user/register", UserRegistrationController, :create
     get "/user/log_in", UserSessionController, :new
     post "/user/log_in", UserSessionController, :create
     get "/user/reset_password", UserResetPasswordController, :new
@@ -45,9 +47,8 @@ defmodule EventHorizonWeb.Router do
   scope "/", EventHorizonWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    get "/", RedirectController, :index
-
     live_session :default, on_mount: {EventHorizonWeb.UserAuth, :ensure_authenticated} do
+      live "/", SiteLive.Index, :index
       live "/sites", SiteLive.Index, :index
       live "/sites/new", SiteLive.Index, :new
       live "/sites/:id/edit", SiteLive.Index, :edit
@@ -78,7 +79,7 @@ defmodule EventHorizonWeb.Router do
   #
   # Note that preview only shows emails that were sent by the same
   # node running the Phoenix server.
-  if Mix.env() == :dev do
+  if Application.compile_env(:event_horizon, :dev_routes) do
     scope "/dev" do
       pipe_through :browser
 
