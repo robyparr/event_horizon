@@ -10,6 +10,7 @@
     </:subtitle>
   </.header>
 
+  <%#
   <.simple_form :let={f} for={@changeset} action={~p"/user/register"}>
     <.error :if={@changeset.action == :insert}>
       Oops, something went wrong! Please check the errors below.
@@ -22,4 +23,5 @@
       <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
     </:actions>
   </.simple_form>
+  %>
 </div>
