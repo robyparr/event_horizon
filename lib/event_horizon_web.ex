@@ -55,7 +55,7 @@ defmodule EventHorizonWeb do
       use Phoenix.LiveView,
         layout: {EventHorizonWeb.LayoutView, :live}
 
-      unquote(view_helpers())
+      unquote(html_helpers())
     end
   end
 
