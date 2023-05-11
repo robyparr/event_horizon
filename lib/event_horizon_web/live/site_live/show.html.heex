@@ -1,4 +1,4 @@
-<.back navigate={~p"/sites"}>Back</.back>
+<.back navigate={~p"/sites"} class="mt-0">Back</.back>
 
 <.header>
   <%= @site.name %>
@@ -19,6 +19,22 @@
   <:item title="Event Count"><%= @event_count %></:item>
   <:item title="Events Today"><%= @todays_event_count %></:item>
 </.list>
+
+<.well class="flex justify-between items-start mt-10">
+  <div :for={{metric_name, metrics} <- @metric_grouping}>
+    <div class="flex items-center">
+      <.icon name={metric_icon(metric_name)} />
+      <strong class="ml-1"><%= Phoenix.Naming.humanize(metric_name) %></strong>
+    </div>
+
+    <ul>
+      <li :for={metric <- metrics} class="flex justify-between">
+        <div><%= String.capitalize(metric.value) %></div>
+        <div><%= metric.count %></div>
+      </li>
+    </ul>
+  </div>
+</.well>
 
 <canvas id="event-chart" width="400" height="200" phx-hook="Chart" class="mt-10"></canvas>
 

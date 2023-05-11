@@ -8,6 +8,7 @@ defmodule EventHorizon.Sites do
 
   alias EventHorizon.Sites.Site
   alias EventHorizon.Sites.Event
+  alias EventHorizon.Sites.Metric
 
   @doc """
   Returns the list of sites.
@@ -149,5 +150,27 @@ defmodule EventHorizon.Sites do
     Date.range(start_on, end_on)
     |> Enum.map(map_func)
     |> Map.new()
+  end
+
+  def sum_metrics(site) do
+    query =
+      from m in Ecto.assoc(site, :metrics),
+      select: %Metric{name: m.name, value: m.value, count: sum(m.count)},
+      group_by: [m.name, m.value],
+      order_by: [m.name, desc: sum(m.count)]
+
+    Repo.all(query)
+  end
+
+  def increment_metric(site, name, value) do
+    attrs = %{date: Date.utc_today(), name: name, value: value, count: 1}
+    metric = Ecto.build_assoc(site, :metrics, attrs)
+    update_query = from(m in Metric, update: [inc: [count: 1]])
+
+    Repo.insert(
+      metric,
+      on_conflict: update_query,
+      conflict_target: [:site_id, :date, :name, :value]
+    )
   end
 end

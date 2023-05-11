@@ -23,7 +23,11 @@ defmodule EventHorizonWeb.Api.EventControllerTest do
   describe "create event" do
     test "renders event when data is valid", %{conn: conn, site: site} do
       assert Sites.list_site_events(site) == []
-      conn = post(conn, ~p"/api/events", event: @create_attrs)
+      conn =
+        conn
+        # Example user agent taken from: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
+        |> Plug.Conn.put_req_header("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0")
+        |> post(~p"/api/events", event: @create_attrs)
       assert response(conn, 201) == ""
 
       assert [%Event{} = event] = Sites.list_site_events(site)

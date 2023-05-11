@@ -58,7 +58,8 @@ defmodule EventHorizon.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:cors_plug, "~> 3.0"}
+      {:cors_plug, "~> 3.0"},
+      {:ua_inspector, "~> 3.2"}
     ]
   end
 

@@ -11,8 +11,10 @@ defmodule EventHorizonWeb.SiteLive.Show do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     site = Sites.get_site!(id)
-
     event_chart_data = Sites.recent_event_count_by_date(site)
+    metric_grouping =
+      Sites.sum_metrics(site)
+      |> Enum.group_by(&(&1.name))
 
     socket =
       socket
@@ -20,6 +22,7 @@ defmodule EventHorizonWeb.SiteLive.Show do
       |> assign(:site, site)
       |> assign(:event_count, Sites.count_site_events(site))
       |> assign(:todays_event_count, event_chart_data[Date.utc_today()])
+      |> assign(:metric_grouping, metric_grouping)
       |> push_chart_data("event-chart", {"Events", event_chart_data})
 
     {:noreply, socket}
@@ -48,5 +51,14 @@ defmodule EventHorizonWeb.SiteLive.Show do
       datasets: [%{label: label, data: data}],
       values: Map.values(data)
     })
+  end
+
+  defp metric_icon(name) do
+    case name do
+      "browser" -> "hero-globe-alt"
+      "device_type" -> "hero-computer-desktop"
+      "operating_system" -> "hero-cpu-chip"
+      _ -> "hero-question-mark-circle"
+    end
   end
 end

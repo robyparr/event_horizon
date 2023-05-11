@@ -11,6 +11,7 @@ defmodule EventHorizon.Sites.Site do
     field :token, :string
 
     has_many :events, Sites.Event
+    has_many :metrics, Sites.Metric
 
     timestamps()
   end
