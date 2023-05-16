@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "dokku": {
+      "predeploy": "mix ua_inspector.download --force",
+      "postdeploy": "mix ecto.migrate"
+    }
+  }
+}
